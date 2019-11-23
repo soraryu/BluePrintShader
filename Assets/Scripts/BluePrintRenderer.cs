@@ -11,6 +11,7 @@ public class BluePrintRenderer : MonoBehaviour {
     public  int             numberOfLayers;
     [Range(0f,1f)]
     public  float           objectOpacity = 0.4f;
+    public float            _LayerPow = 3f;
 
     private CommandBuffer   cbPeeling;
     private CommandBuffer   cbEdgeMapping;
@@ -107,7 +108,8 @@ public class BluePrintRenderer : MonoBehaviour {
 
         for (int i = 0; i < numberOfLayers; i++)
         {
-          //  cbEdgeMapping.SetRenderTarget(edgeMap);
+            //  cbEdgeMapping.SetRenderTarget(edgeMap);
+            cbEdgeMapping.SetGlobalFloat("_Amount", Mathf.Pow(1 - (i + 1f) / numberOfLayers, _LayerPow));
             cbEdgeMapping.Blit(peelingIntermidate[i], edgeMap, edgeConstructionMat, 1);
 
         }
@@ -117,7 +119,7 @@ public class BluePrintRenderer : MonoBehaviour {
         
 
         cbEdgeMapping.Blit(BuiltinRenderTextureType.CameraTarget, forwardPass);
-        cbEdgeMapping.SetGlobalTexture("_ForwadPass", forwardPass);
+        cbEdgeMapping.SetGlobalTexture("_ForwardPass", forwardPass);
         cbEdgeMapping.Blit(edgeMap, BuiltinRenderTextureType.CameraTarget, combineOnScreen);
         cbEdgeMapping.Blit(BuiltinRenderTextureType.CameraTarget, edgeMap);
 

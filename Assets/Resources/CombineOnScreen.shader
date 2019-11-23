@@ -37,7 +37,7 @@
 
 			// =====================================================
 			sampler2D _MainTex;
-			sampler2D _ForwadPass;
+			sampler2D _ForwardPass;
 			float4    _MainTex_ST;
 			float     _ForwardPassContribution;
 
@@ -54,7 +54,7 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 edgeMap     = tex2D(_MainTex,    i.uv);
-				fixed4 forwardPass = tex2D(_ForwadPass, i.uv);
+				fixed4 forwardPass = tex2D(_ForwardPass, i.uv);
 				
 				
 				return  edgeMap + forwardPass* _ForwardPassContribution;

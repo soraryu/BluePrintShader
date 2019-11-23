@@ -56,7 +56,7 @@
 				float4  p = tex2D(_MainTex, i.uv);
 			    if (abs(dot(p,(0.25).xxxx) - 1.) < 0.001) discard;
 
-				float scale = 2.;
+				float scale = 1.0;
 
 				float4 A = tex2D(_MainTex, i.uv.xy + _MainTex_TexelSize.xy*float2(-1,  1)*scale);
 				float4 C = tex2D(_MainTex, i.uv.xy + _MainTex_TexelSize.xy*float2( 1,  1)*scale);
@@ -66,8 +66,10 @@
 				float normDis   = 1. - 0.5*(dot(A.xyz, H.xyz) + dot(C.xyz, F.xyz));
 				float depthDis  = (1. - 0.5*abs(A.w - H.w))*(1. - 0.5*abs(A.w - H.w));
 				      depthDis *= (1. - 0.5*abs(C.w - F.w))*(1. - 0.5*abs(C.w - F.w));
-					  depthDis  = 1. - depthDis;           
-				return float4(normDis, depthDis, depthDis*normDis,1.);
+					  depthDis  = 1. - depthDis;
+				
+				float3 res = float3(normDis, depthDis, depthDis * normDis);
+				return float4(dot(res,res).xxx, 1.);
 			}
 			// =====================================================
 			ENDCG
@@ -103,6 +105,7 @@
 
 			sampler2D _MainTex;
 			float4    _MainTex_ST;
+			float _Amount;
 
 			// =====================================================
 
@@ -117,7 +120,7 @@
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-				return  tex2D(_MainTex, i.uv);
+				return  tex2D(_MainTex, i.uv) * _Amount;
 			}
 				// =====================================================
 				ENDCG
